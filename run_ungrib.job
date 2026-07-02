@@ -5,14 +5,14 @@
 #SBATCH -n 1
 #SBATCH -c 1
 #SBATCH --mem-per-cpu=2000
-#SBATCH --mail-user=aurora.lagos.d@uchile.cl
+#SBATCH --mail-user=correo@dgac.gob.cl
 #SBATCH --mail-type=ALL
 #SBATCH -t 00:10:00
 #SBATCH -o logs/geogrid_%j.out
 #SBATCH -e logs/geogrid_%j.err
 
 #-----------------Toolchain---------------------------
-cd /home/courses/student01/models/wps/wps-4.2-intel-2022.00-dmpar/WPS-4.2
+cd /home/courses/studentXX/models/wps/WPS-4.2/
 
 ml purge
 ml intel/2022.00
