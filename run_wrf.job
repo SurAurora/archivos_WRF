@@ -17,8 +17,6 @@ export KMP_STACKSIZE=128000000
 export OMP_STACKSIZE=128000000
 ulimit -s unlimited
 
-cd /home/courses/student01/models/wrf/WRF-4.3.3/run/
-
 date
 echo "antes de ml purge"
 ml purge

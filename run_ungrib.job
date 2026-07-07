@@ -12,13 +12,9 @@
 #SBATCH -e logs/geogrid_%j.err
 
 #-----------------Toolchain---------------------------
-cd /home/courses/studentXX/models/wps/WPS-4.2/
-
 ml purge
 ml intel/2022.00
-
 # -----------------Modulos----------------------------
 ml WPS/4.2-dmpar
-
 # ----------------Comando-----------------------------
 srun ./ungrib.exe
