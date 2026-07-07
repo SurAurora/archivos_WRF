@@ -1,0 +1,39 @@
+#!/bin/bash
+#---------------Script SBATCH - NLHPC ----------------
+#SBATCH -J WRF
+#SBATCH -p main
+#SBATCH -n 80
+#SBATCH --ntasks-per-node=80
+#SBATCH -c 1
+#SBATCH --mem-per-cpu=2839
+#SBATCH --mail-user=aurora.lagos.d@uchile.cl
+#SBATCH --mail-type=ALL
+#SBATCH -t 00-12:00:00
+#SBATCH -o logs/wrf_%j.out
+#SBATCH -e logs/wrf_%j.err
+
+export MP_STACK_SIZE=128000000
+export KMP_STACKSIZE=128000000
+export OMP_STACKSIZE=128000000
+ulimit -s unlimited
+
+cd /home/courses/student01/models/wrf/WRF-4.3.3/run/
+
+date
+echo "antes de ml purge"
+ml purge
+echo "antes de GCCcore"
+ml GCCcore/13.2.0
+echo "antes de aocc"
+ml aocc/4.2.0
+echo "antes de openmpi"
+ml openmpi/5.0.3-zen4-7
+echo "antes de wrf"
+ml wrf/4.3.3-mpi-dmpar-zen4-u
+echo "which wrf.exe:"
+which wrf.exe
+echo "antes de srun"
+date
+srun wrf.exe
+echo "despues de srun"
+date

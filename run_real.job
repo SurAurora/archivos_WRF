@@ -1,0 +1,22 @@
+#!/bin/bash
+#---------------Script SBATCH - NLHPC ----------------
+#SBATCH -J REAL
+#SBATCH -p main
+#SBATCH -n 80
+#SBATCH --ntasks-per-node=80
+#SBATCH -c 1
+#SBATCH --mem-per-cpu=3000
+#SBATCH --mail-user=aurora.lagos.d@uchile.cl
+#SBATCH --mail-type=ALL
+#SBATCH -t 00:40:00
+#SBATCH -o logs/rsl_%j.out
+#SBATCH -e logs/rsl_%j.err
+
+#-----------------Toolchain---------------------------
+ml purge
+ml aocc/4.2.0
+# ----------------Modulos----------------------------
+ml openmpi/5.0.3-zen4-7
+ml wrf/4.3.3-mpi-dmpar-zen4-u
+# ----------------Comando--------------------------
+srun real.exe
