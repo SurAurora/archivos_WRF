@@ -1,5 +1,8 @@
 # Tutorial: preparacion de archivos WRF/WPS en Leftraru
 
+Este tutorial esta siendo escrito por Aurora Lagos-Duarte (aurora.lagos.d@uchile.cl). 
+Última actualización el 08-julio-2026.
+
 Este tutorial muestra como ingresar a Leftraru, descargar los archivos de la clase, preparar WPS y ejecutar el flujo completo hasta `real.exe` y `wrf.exe`.
 
 En todos los comandos, reemplazar `studentXX` por el usuario correspondiente, por ejemplo `student01`, `student02`, etc.
