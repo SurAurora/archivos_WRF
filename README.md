@@ -1,13 +1,13 @@
-# Tutorial: preparacion de archivos WRF/WPS en Leftraru
+# Tutorial de ejecución simulación WRF en modo diagnóstico en NLHPC.
 
 Este tutorial esta siendo escrito por Aurora Lagos-Duarte (aurora.lagos.d@uchile.cl). 
 Última actualización el 08-julio-2026.
 
-Este tutorial muestra como ingresar a Leftraru, descargar los archivos de la clase, preparar WPS y ejecutar el flujo completo hasta `real.exe` y `wrf.exe`.
+En este documento encontrará el paso a paso de: como ingresar a Leftraru, descargar los archivos mínimos para ejecutar el flujo completo de WRF y hacer una simulación WRF en modo de diagnóstico. Todo esto en el ambiente HPC del Laboratorio Nacional de Computación de Alto Rendimiento (https://www.nlhpc.cl/)
 
-En todos los comandos, reemplazar `studentXX` por el usuario correspondiente, por ejemplo `student01`, `student02`, etc.
+nota: En todos los comandos siguientes, reemplazar `studentXX` por el usuario correspondiente, por ejemplo `student01`, `student02`, etc.
 
-## 1. Ingresar a Leftraru desde terminal
+## 1. Ingresar al NLHPC desde terminal
 
 ```bash
 ssh -p XXXX studentXX@leftraru.nlhpc.cl
@@ -89,7 +89,7 @@ Cambiar de nombre el archivo original `namelist.wps` para dejarlo como respaldo:
 mv namelist.wps namelist.wps.bak
 ```
 
-Copiar el archivo `namelist.wps` creado en la pagina Domain Wizard de Jiri Richter, descargado desde GitHub:
+Copiar el archivo `namelist.wps` creado en la pagina Domain Wizard de Jiri Richter (https://jiririchter.github.io/WRFDomainWizard/), descargado desde GitHub:
 
 ```bash
 cp /home/courses/studentXX/archivos_WRF/namelist.wps.dominio_93km_ChileCentroSur .
