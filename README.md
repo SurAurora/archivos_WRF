@@ -1,4 +1,4 @@
-# Tutorial de ejecución simulación WRF en modo diagnóstico en NLHPC.
+# Tutorial de ejecucion simulacion WRF en modo diagnostico en NLHPC.
 
 Este tutorial esta siendo escrito por Aurora Lagos-Duarte (aurora.lagos.d@uchile.cl). 
 Ultima actualizacion el 08-julio-2026.
