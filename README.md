@@ -1,9 +1,9 @@
 # Tutorial de ejecución simulación WRF en modo diagnóstico en NLHPC.
 
 Este tutorial esta siendo escrito por Aurora Lagos-Duarte (aurora.lagos.d@uchile.cl). 
-Última actualización el 08-julio-2026.
+Ultima actualizacion el 08-julio-2026.
 
-En este documento encontrará el paso a paso de: como ingresar a Leftraru, descargar los archivos mínimos para ejecutar el flujo completo de WRF y hacer una simulación WRF en modo de diagnóstico. Todo esto en el ambiente HPC del Laboratorio Nacional de Computación de Alto Rendimiento (https://www.nlhpc.cl/)
+En este documento encontrara el paso a paso de: como ingresar a Leftraru, descargar los archivos minimos para ejecutar el flujo completo de WRF y hacer una simulacion WRF en modo de diagnostico. Todo esto en el ambiente HPC del Laboratorio Nacional de Computacion de Alto Rendimiento (https://www.nlhpc.cl/)
 
 nota: En todos los comandos siguientes, reemplazar `studentXX` por el usuario correspondiente, por ejemplo `student01`, `student02`, etc.
 
