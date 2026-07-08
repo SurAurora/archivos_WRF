@@ -1,6 +1,6 @@
 # Tutorial: preparacion de archivos WRF/WPS en Leftraru
 
-Este tutorial muestra como ingresar a Leftraru, descargar los archivos de la clase y preparar WPS para ejecutar `geogrid.exe`.
+Este tutorial muestra como ingresar a Leftraru, descargar los archivos de la clase, preparar WPS y ejecutar el flujo completo hasta `real.exe` y `wrf.exe`.
 
 En todos los comandos, reemplazar `studentXX` por el usuario correspondiente, por ejemplo `student01`, `student02`, etc.
 
@@ -16,7 +16,7 @@ Ingresar la contrasena entregada para el usuario:
 contrasena: ******
 ```
 
-## 2. Descargar la carpeta con archivos de la clase
+## 2. Descargar o actualizar la carpeta con archivos de la clase
 
 Desde `/home/courses/studentXX/`, clonar el repositorio:
 
@@ -28,6 +28,18 @@ Esto creara la carpeta:
 
 ```bash
 /home/courses/studentXX/archivos_WRF
+```
+
+En caso de ya haber tenido la carpeta, debe ingresar a ella:
+
+```bash
+cd /home/courses/studentXX/archivos_WRF/
+```
+
+y actualizar los archivos:
+
+```bash
+git pull
 ```
 
 ## 3. Crear la carpeta `models`
@@ -157,25 +169,25 @@ ln -s namelist.wps.dominio_93km_ChileCentroSur namelist.wps
 
 ## 9. Copiar y editar scripts `.job`
 
-El siguiente paso es ejecutar `geogrid.exe`. Para eso se utiliza un documento con las caracteristicas del trabajo que se quiere ejecutar. Este documento se puede crear en:
+El siguiente paso es ejecutar `geogrid.exe`. Para eso se utiliza un documento con las caracteristicas del trabajo que se quiere ejecutar y que luego gestionara SLURM. Este documento se puede crear en:
 
 https://wiki.nlhpc.cl/Generador_Scripts
 
-Los documentos ya estan listos en `/home/courses/studentXX/archivos_WRF`. Copiarlos a la carpeta correcta:
+Los documentos ya estan listos y estan disponibles en `/home/courses/studentXX/archivos_WRF`. Solo hay que copiar los scripts de lanzamiento con el siguiente comando:
 
 ```bash
-cp /home/courses/studentXX/archivos_WRF/*.job /home/courses/studentXX/models/wps/WPS-4.2/
+cp /home/courses/studentXX/archivos_WRF/run_wps* /home/courses/studentXX/models/wps/WPS-4.2/
 ```
 
-Editar cada archivo `.job`:
+Editar cada script:
 
 ```bash
-nano run_geogrid.job
-nano run_ungrib.job
-nano run_metgrid.job
+nano run_wps_geogrid.job
+nano run_wps_ungrib.job
+nano run_wps_metgrid.job
 ```
 
-En cada `.job`, cambiar el correo:
+En cada script, cambiar el correo:
 
 ```bash
 #SBATCH --mail-user=correo@dgac.gob.cl
@@ -189,10 +201,10 @@ cd /home/courses/studentXX/models/wps/WPS-4.2/
 
 Guardar y cerrar cada archivo.
 
-Dar permisos de ejecucion a cada `.job`:
+Dar permisos de ejecucion a cada script:
 
 ```bash
-chmod a+x *.job
+chmod a+x run_wps_geogrid.job run_wps_ungrib.job run_wps_metgrid.job
 ```
 
 ## 10. Ejecutar `geogrid.exe`
@@ -200,7 +212,7 @@ chmod a+x *.job
 Ejecutar el trabajo:
 
 ```bash
-sbatch run_geogrid.job
+sbatch run_wps_geogrid.job
 ```
 
 ## 11. Revisar el estado de la tarea
@@ -221,4 +233,224 @@ Para cortar el comando `squeue`, usar:
 
 ```text
 Ctrl + C
+```
+
+Una vez que termine la tarea, llegara un correo de notificacion con el mensaje `(COMPLETED)`, o bien al revisar el estado de la tarea con `squeue` no aparecera ninguna tarea ejecutandose.
+
+Para confirmar que la tarea fue completada con exito, revisar las ultimas lineas del archivo `geogrid.log`:
+
+```bash
+tail -20 geogrid.log
+```
+
+Si la tarea fue ejecutada exitosamente, el ultimo mensaje dira:
+
+```text
+*** Successful completion of program geogrid.exe ***
+```
+
+Caso contrario, hubo un error en alguno de los pasos anteriores.
+
+## 12. Descargar datos meteorologicos
+
+Antes de descargar los datos meteorologicos, crear una carpeta que albergara los datos meteorologicos que serviran de condiciones iniciales y condiciones de borde:
+
+```bash
+cd /home/courses/studentXX/data/
+mkdir CI_CB
+cd CI_CB
+mkdir fnl
+```
+
+La ruta completa sera `/home/courses/studentXX/data/CI_CB/fnl/`. En esa posicion se copiara el archivo creado en la pagina de GDEX que permite la descarga automatizada del producto FNL:
+
+```bash
+cp /home/courses/studentXX/archivos_WRF/download_fnl_gdex.csh .
+```
+
+Para comenzar la descarga, ejecutar:
+
+```bash
+./download_fnl_gdex.csh
+```
+
+## 13. Linkear datos meteorologicos
+
+Una vez terminada la descarga, volver a la carpeta de trabajo de WPS:
+
+```bash
+cd /home/courses/studentXX/models/wps/WPS-4.2
+```
+
+Y linkear los archivos meteorologicos descargados:
+
+```bash
+./link_grib.csh /home/courses/studentXX/data/CI_CB/fnl/fnl* .
+```
+
+## 14. Linkear `Vtable`
+
+Tambien linkear la `Vtable` correspondiente a los archivos meteorologicos:
+
+```bash
+ln -s ungrib/Variable_Tables/Vtable.GFS Vtable
+```
+
+## 15. Ejecutar `ungrib.exe`
+
+Ya esta todo preparado para ejecutar `ungrib.exe`:
+
+```bash
+sbatch run_wps_ungrib.job
+```
+
+Se puede revisar el avance con el comando:
+
+```bash
+squeue -i5
+```
+
+Una vez terminada la tarea, revisar las ultimas 20 lineas del archivo `ungrib.log` para confirmar que haya terminado con exito:
+
+```bash
+tail -20 ungrib.log
+```
+
+De haber terminado con exito, deberia decir:
+
+```text
+****  Done deleting temporary files.
+*** Successful completion of program ungrib.exe ***
+```
+
+## 16. Ejecutar `metgrid.exe`
+
+Si `ungrib.exe` termino con exito, el siguiente paso es ejecutar `metgrid.exe`:
+
+```bash
+sbatch run_wps_metgrid.job
+```
+
+Una vez terminada la tarea, revisar que esta haya terminado con exito:
+
+```bash
+tail -20 metgrid.log
+```
+
+De haber terminado con exito, deberia decir:
+
+```text
+*** Successful completion of program metgrid.exe ***
+```
+
+## 17. Crear la carpeta `wrf`
+
+Dentro de `models`, crear la carpeta `wrf` y entrar:
+
+```bash
+mkdir wrf
+cd wrf
+```
+
+Copiar la carpeta del modelo WRF en el directorio actual:
+
+```bash
+cp -r /home/lmod/software/WRF/4.3.3-intel-2022.00-dmpar/WRF-4.3.3 .
+```
+
+Entrar a la carpeta `WRF-4.3.3`:
+
+```bash
+cd WRF-4.3.3
+```
+
+Entrar al directorio `run`, donde se ejecutan `real.exe` y `wrf.exe`:
+
+```bash
+cd run
+```
+
+## 18. Reemplazar el `namelist.input`
+
+Cambiar de nombre el archivo original `namelist.input` para dejarlo como respaldo:
+
+```bash
+mv namelist.input namelist.input.bak
+```
+
+Copiar el archivo `namelist.input`:
+
+```bash
+cp /home/courses/studentXX/archivos_WRF/namelist.input.dominio_93km_ChileCentroSur .
+```
+
+## 19. Crear link simbolico a `namelist.input`
+
+Crear un link simbolico, equivalente a un acceso directo, desde `namelist.input.dominio_93km_ChileCentroSur` con el nombre `namelist.input`:
+
+```bash
+ln -s namelist.input.dominio_93km_ChileCentroSur namelist.input
+```
+
+## 20. Crear link simbolico a archivos `met_em`
+
+Crear un link simbolico de los archivos `met_em.d0*`:
+
+```bash
+ln -s /home/courses/studentXX/models/wps/WPS-4.2/met_em.d0* .
+```
+
+## 21. Copiar y editar scripts `.job`
+
+Los siguientes pasos son ejecutar `real.exe` y `wrf.exe`. Los documentos para lanzarlos estan disponibles en `/home/courses/studentXX/archivos_WRF`. Solo hay que copiar los archivos `.job` con el siguiente comando:
+
+```bash
+cp /home/courses/studentXX/archivos_WRF/run_wrf* /home/courses/studentXX/models/wrf/WRF-4.3.3/run/
+```
+
+Ahora, para cada archivo `.job`:
+
+```bash
+nano run_wrf_real.job
+nano run_wrf_wrf.job
+```
+
+Hay que cambiar el correo:
+
+```bash
+#SBATCH --mail-user=correo@dgac.gob.cl
+```
+
+Y dar permisos de ejecucion a cada `.job`:
+
+```bash
+chmod a+x *.job
+```
+
+## 22. Ejecutar `real.exe`
+
+Ejecutar el trabajo:
+
+```bash
+sbatch run_wrf_real.job
+```
+
+Una vez terminada la tarea, la ultima linea del archivo `rsl.error.0000` debe ser:
+
+```text
+SUCCESS COMPLETE REAL_EM INIT
+```
+
+## 23. Ejecutar `wrf.exe`
+
+Ejecutar el trabajo:
+
+```bash
+sbatch run_wrf_wrf.job
+```
+
+Una vez terminada la tarea, la ultima linea del archivo `rsl.error.0000` debe ser:
+
+```text
+SUCCESS COMPLETE WRF
 ```
