@@ -7,13 +7,13 @@ En todos los comandos, reemplazar `studentXX` por el usuario correspondiente, po
 ## 1. Ingresar a Leftraru desde terminal
 
 ```bash
-ssh -p 4603 studentXX@leftraru.nlhpc.cl
+ssh -p XXXX studentXX@leftraru.nlhpc.cl
 ```
 
 Ingresar la contrasena entregada para el usuario:
 
 ```text
-contrasena: ******
+contrasena: **************
 ```
 
 ## 2. Descargar o actualizar la carpeta con archivos de la clase
